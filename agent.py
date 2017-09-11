@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
+import random
+
 from params import *
 from collections import deque
 
@@ -22,7 +24,7 @@ class Agent:
         """
         self.q1 = q1
         self.q2 = q2
-        self.memory = deque(MAX_MEMORY_CAPACITY)
+        self.memory = deque(maxlen=MAX_MEMORY_CAPACITY)
 
     def remember(self, state, action, reward, new_state, done):
         """Adds data to memory.
@@ -52,6 +54,7 @@ class Agent:
             An integer in the action space (0 or 1).
         """
         if np.random.rand() <= EPSILON:
+            # Select a random action
             action = action_space.sample()
         else:
             q1_out = self.q1.predict(state)
@@ -60,3 +63,15 @@ class Agent:
             action = np.argmax((q1_out + q2_out)[0])
 
         return action
+
+    def replay(self, batch_size):
+        minibatch = random.sample(self.memory, batch_size)
+
+        for state, action, reward, new_state, done in minibatch:
+            if np.random.rand() <= 0.5:
+                target = reward
+
+                if not done:
+                    pass
+            else:
+                pass
